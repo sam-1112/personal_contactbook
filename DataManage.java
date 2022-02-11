@@ -17,6 +17,32 @@ public class DataManage {
         }
     }
 
+    public static boolean writeData(ArrayList<People> peoples){
+        try{
+            FileWriter writer = new FileWriter("Data.txt");
+            for(People p : DataManage.people){
+                writer.write(p.printfile(true, true, true, true, true) + "\n");
+            }
+            writer.flush();
+            writer.close();
+        }catch(IOException e){
+            e.printStackTrace();
+        }
+        return true;
+    }
+
+    public static boolean appendData(People person){
+        try{
+            FileWriter writer = new FileWriter("Data.txt",true);
+            writer.write(person.printfile(true, true, true, true, true) + "\n");
+            writer.flush();
+            writer.close();
+        }catch(IOException e){
+            e.printStackTrace();
+        }
+        return true;
+    }
+
     public static void printTitle(boolean name, boolean phone, boolean catalog, boolean email, boolean birthday){
         String title = String.format("%-4s", "[ID]");
         if(name){
@@ -45,6 +71,7 @@ public class DataManage {
                     Collections.sort(peoples, new IDSort());
                 }
                 else{
+                    Collections.sort(peoples, new IDSort());
                     Collections.reverse(peoples);
                 }
             }
@@ -53,6 +80,7 @@ public class DataManage {
                     Collections.sort(peoples, new NameSort());
                 }
                 else{
+                    Collections.sort(peoples, new IDSort());
                     Collections.reverse(peoples);
                 }
             }
@@ -61,6 +89,7 @@ public class DataManage {
                     Collections.sort(peoples, new PhoneSort());
                 }
                 else{
+                    Collections.sort(peoples, new IDSort());
                     Collections.reverse(peoples);
                 }
             }
@@ -69,6 +98,7 @@ public class DataManage {
                     Collections.sort(peoples, new CatalogSort());
                 }
                 else{
+                    Collections.sort(peoples, new IDSort());
                     Collections.reverse(peoples);
                 }
             }
@@ -77,6 +107,7 @@ public class DataManage {
                     Collections.sort(peoples, new EmailSort());
                 }
                 else{
+                    Collections.sort(peoples, new IDSort());
                     Collections.reverse(peoples);
                 }
             }
@@ -85,10 +116,49 @@ public class DataManage {
                     Collections.sort(peoples, new BirthdaySort());
                 }
                 else{
+                    Collections.sort(peoples, new IDSort());
                     Collections.reverse(peoples);
                 }
             }
        }
+    }
+
+    public static boolean checkName(String name){
+        if(name.matches("[a-zA-z]*") && name.length() <= 12){
+            return true;
+        }
+        return false;
+    }
+    public static boolean checkPhone(String phone){
+        if(phone.matches("[0-9]{4}-[0-9]{6}")){
+            return true;
+        }
+        return false;
+    }
+    public static boolean checkCatalog(String catalog){
+        if(catalog.compareTo("a") < Catalog.catalog.size() && catalog.compareTo("a") >= 0){
+            return true;
+        }
+        return false;
+    }
+    public static boolean checkEmail(String email){
+        if(email.matches("[A-Za-z0-9+_.-]+@(.+)$") && email.length() <= 24){
+            return true;
+        }
+        return false;
+    }
+    public static boolean checkBirthday(String birth){
+        if(birth.matches("[0-9]{4}")){
+            return true;
+        }
+        return false;
+    }
+
+    public static boolean getValue(String s){
+        if(s.equalsIgnoreCase("true")){
+            return true;
+        }
+        return false;
     }
 }
 class IDSort implements Comparator<People>{

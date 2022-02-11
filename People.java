@@ -35,7 +35,42 @@ public class People {
         this.Birthday = tokens.nextToken();
     }
 
-    public void print(boolean name, boolean phone, boolean catalog, boolean email, boolean birthday){
+    public String printfile(boolean name, boolean phone, boolean catalog, boolean email, boolean birthday){
+        String ans =  String.format("%04d ", this.ID);
+        if(name)
+            ans += this.Name + " ";
+        if(phone)
+            ans += this.Phone + " ";
+        if(catalog)
+            ans += this.Catalog + " ";
+        if(email)
+            ans += this.Email + " ";
+        if(birthday)
+            ans += this.Birthday + " ";
+        return ans.trim();
+    }
+
+    public String print(boolean name, boolean phone, boolean catalog, boolean email, boolean birthday){
+        String person = ""; 
+        person += String.format("%04d ", this.ID);
+        if(name){
+            person += String.format("%-12s ", this.Name);
+        }
+        if(phone){
+            person += String.format("%-11s ", this.Phone);
+        }
+        if(catalog){
+            person += String.format("%-12s ", this.Catalog);
+        }
+        if(email){
+            person += String.format("%-24s ", this.Email);
+        }
+        if(birthday){
+            person += String.format("%-4s", this.Birthday);
+        }
+        return person.trim();
+    }
+    public void print_data(boolean name, boolean phone, boolean catalog, boolean email, boolean birthday){
         String person = ""; 
         person += String.format("%04d", this.ID);
         if(name){
@@ -74,7 +109,9 @@ public class People {
     public String getBirthday(){
         return this.Birthday;
     }
-
+    public void setID(int id){
+        this.ID = id;
+    }
     public void setName(String name){
         this.Name = name;
     }

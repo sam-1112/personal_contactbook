@@ -15,4 +15,19 @@ public class Config {
             e.printStackTrace();
         }
     } 
+
+    public static boolean writeConfig(HashMap<String, String> config){
+        try{
+            FileWriter writer = new FileWriter("myconfig.txt");
+            for(String s : config.keySet()){
+                writer.write(s + ": " + config.get(s)+ "\n");
+            }
+            writer.flush();
+            writer.close();
+            return true;
+        }catch(IOException e){
+            e.printStackTrace();
+        }
+        return false;
+    }
 }

@@ -34,6 +34,46 @@ public class Function {
                     modify();
                     flag = true;
                 }
+                case "6" -> {
+                    delete();
+                    flag = true;
+                }
+                case "7" -> {
+                    add_contact();
+                    flag = true;
+                }
+                case "8" -> {
+                    add_catalog();
+                    flag = true;
+                }
+                case "9" -> {
+                    show_catalog();
+                    flag = true;
+                }
+                case "10" -> {
+                    set_display_field();
+                    flag = true;
+                }
+                case "11" -> {
+                    set_show_perpage();
+                    flag = true;
+                }
+                case "12" -> {
+                    set_order();
+                    flag = true;
+                }
+                case "13" -> {
+                    set_sort_by_field();
+                    flag = true;
+                }
+                case "14" -> {
+                    show_raw_data();
+                    flag = true;
+                }
+                case "15" -> {
+                    data_optimize();
+                    flag = true;
+                }
                 case "99" -> System.exit(0);
                 default -> {
                     System.out.println("Error_wrong_command");
@@ -61,10 +101,12 @@ public class Function {
     }
 
     void show_all(){
-        DataManage.printTitle(true, true, true, true, true);
+        DataManage.printTitle(DataManage.getValue(Config.config.get("show_name")), DataManage.getValue(Config.config.get("show_phone")), 
+                DataManage.getValue(Config.config.get("show_catalog")), DataManage.getValue(Config.config.get("show_email")), DataManage.getValue(Config.config.get("show_birthday")));
         DataManage.sortData(DataManage.people);
         for(People p : DataManage.people){
-            p.print(true, true, true, true, true);
+            p.print_data(DataManage.getValue(Config.config.get("show_name")), DataManage.getValue(Config.config.get("show_phone")), 
+                DataManage.getValue(Config.config.get("show_catalog")), DataManage.getValue(Config.config.get("show_email")), DataManage.getValue(Config.config.get("show_birthday")));
         }
     }
 
@@ -101,17 +143,19 @@ public class Function {
         int detail = 0;
         String command = "";
         People[][] data = new People[(DataManage.people.size()/data_per_page) + 1][data_per_page];
-        for(int page = 0 ; page < ((DataManage.people.size()/data_per_page) + 1) && detail < DataManage.people.size() ; page++){
+        for(int page_in = 0 ; page_in < ((DataManage.people.size()/data_per_page) + 1) && detail < DataManage.people.size() ; page_in++){
             for(int i = 0 ; i < data_per_page && detail < DataManage.people.size(); i++){
-                data[page][i] = DataManage.people.get(detail++);
+                data[page_in][i] = DataManage.people.get(detail++);
             }
         }
-
-        for(int page = 0 ; (page % data_per_page != 0) ?page < (DataManage.people.size()/data_per_page) + 1 :page < (DataManage.people.size()/data_per_page); ){
+        
+        for(int page = 0 ; page < data.length ; ){
             boolean flag = true;
-            DataManage.printTitle(true, true, true, true, true);
+            DataManage.printTitle(DataManage.getValue(Config.config.get("show_name")), DataManage.getValue(Config.config.get("show_phone")), 
+                    DataManage.getValue(Config.config.get("show_catalog")), DataManage.getValue(Config.config.get("show_email")), DataManage.getValue(Config.config.get("show_birthday")));
             for(int i = 0 ; i < data_per_page && data[page][i] != null; i++){
-                data[page][i].print(true, true, true, true, true);
+                data[page][i].print_data(DataManage.getValue(Config.config.get("show_name")), DataManage.getValue(Config.config.get("show_phone")), 
+                            DataManage.getValue(Config.config.get("show_catalog")), DataManage.getValue(Config.config.get("show_email")), DataManage.getValue(Config.config.get("show_birthday")));
             }
             
             if(page == 0){
@@ -198,7 +242,8 @@ public class Function {
         
         for(People p : DataManage.people){
             if(p.getCatalog().equalsIgnoreCase(Catalog.catalog.get(command.compareTo("a")).getCatalog())){
-                p.print(true, true, true, true, true);
+                p.print_data(DataManage.getValue(Config.config.get("show_name")), DataManage.getValue(Config.config.get("show_phone")), 
+                        DataManage.getValue(Config.config.get("show_catalog")), DataManage.getValue(Config.config.get("show_email")), DataManage.getValue(Config.config.get("show_birthday")));
             }
         }
     }
@@ -274,7 +319,8 @@ public class Function {
             }
             if(person.size() != 0){
                 for(People p : person){
-                    p.print(true, true, true, true, true);
+                    System.out.println(p.print(DataManage.getValue(Config.config.get("show_name")), DataManage.getValue(Config.config.get("show_phone")), 
+                            DataManage.getValue(Config.config.get("show_catalog")), DataManage.getValue(Config.config.get("show_email")), DataManage.getValue(Config.config.get("show_birthday"))));
                 }
             }
             System.out.println("[1].Restart_search [0].Go_back_to_main_menu [99].Exit_system");
@@ -301,72 +347,530 @@ public class Function {
     void modify(){
         System.out.println("Input_ID_to_be_modified:");
         String command = Main.keyin.nextLine();
-        boolean flag = true;
-        People modify_person = new People();
+        boolean flag = true, search_flag = false;
 
         for(People p : DataManage.people){
             if(Integer.parseInt(command) == p.getID()){
+                search_flag = true;
                 System.out.println("Search_result:");
-                DataManage.printTitle(true, true, true, true, true);
-                p.print(true, true, true, true, true);
+                DataManage.printTitle(DataManage.getValue(Config.config.get("show_name")), DataManage.getValue(Config.config.get("show_phone")), 
+                        DataManage.getValue(Config.config.get("show_catalog")), DataManage.getValue(Config.config.get("show_email")), DataManage.getValue(Config.config.get("show_birthday")));
+                p.print_data(DataManage.getValue(Config.config.get("show_name")), DataManage.getValue(Config.config.get("show_phone")), 
+                        DataManage.getValue(Config.config.get("show_catalog")), DataManage.getValue(Config.config.get("show_email")), DataManage.getValue(Config.config.get("show_birthday")));
+                while(flag){
+                    System.out.println("New_name:");
+                    command = Main.keyin.nextLine();
+                    if(command.length() == 0){
+                        break;
+                    }
+                    if(DataManage.checkName(command)){
+                        p.setName(command);
+                        flag = false;
+                    }
+                    else{
+                        System.out.println("Error_wrong_data");
+                        System.out.println("Please_input_again:");
+                    }
+                }
+                flag = true;
+                while(flag){
+                    System.out.println("New_phone:");
+                    command = Main.keyin.nextLine();
+                    if(DataManage.checkPhone(command)){
+                        p.setPhone(command);
+                        flag = false;
+                    }
+                    else if(command.length() == 0){
+                        flag = false;
+                    }
+                    else{
+                        System.out.println("Error_wrong_data");
+                        System.out.println("Please_input_again:");
+                    }
+                }
+                flag = true;
+                while(flag){
+                    System.out.print("Catalogs:");
+                    int i;
+                    for(i = 0 ; i < Catalog.catalog.size() ; ++i){
+                        if(i != 0){System.out.print(" ");}
+                        System.out.print("[" + (char)(i+97) + "]." + Catalog.catalog.get(i).getCatalog());
+                    }
+                    System.out.println("New_catalog:");
+                    command = Main.keyin.nextLine();
+                    if(command.length() == 0){
+                        break;
+                    }
+                    if(DataManage.checkCatalog(command)){
+                        p.setCatalog(Catalog.catalog.get(command.compareTo("a")).getCatalog());
+                        flag = false;
+                    }
+                    else{
+                        System.out.println("Error_wrong_data");
+                        System.out.println("Please_input_again:");
+                    }
+                }
+                flag = true;
+                while(flag){
+                    System.out.println("New_email:");
+                    command = Main.keyin.nextLine();
+                    if(DataManage.checkEmail(command)){
+                        p.setEmail(command);
+                        flag = false;
+                    }
+                    else if(command.length() == 0){
+                        flag = false;
+                    }
+                    else{
+                        System.out.println("Error_wrong_data");
+                        System.out.println("Please_input_again:");
+                    }
+                }
+                flag = true;
+                while(flag){
+                    System.out.println("New_birthday:");
+                    command = Main.keyin.nextLine();
+                    if(DataManage.checkBirthday(command)){
+                        p.setBirthday(command);
+                        flag = false;
+                    }
+                    else if(command.length() == 0 ){
+                        flag = false;
+                    }
+                    else{
+                        System.out.println("Error_wrong_data");
+                        System.out.println("Please_input_again:");
+                    }
+                }
                 break;
             }
         }
-        
-        while(flag){
-            System.out.println("New_name:");
+        if(!search_flag){
+            System.out.println("Doesn't exist");
+            return;
+        }
+        if(DataManage.writeData(DataManage.people)){
+            System.out.println("Modify_data_success");
+            DataManage.people.clear();
+            DataManage.readData();
+            return;
+        }
+    }
+
+    void delete(){
+        boolean search_flag = false;
+        System.out.println("Input_ID_to_be_deleted:");
+        String command = Main.keyin.nextLine();
+        for(People p : DataManage.people){
+            if(Integer.parseInt(command) == p.getID()){
+                DataManage.people.remove(p);
+                search_flag = true;
+                break;
+            }
+        }
+        if(!search_flag){
+            System.out.println("Doesn't exist");
+            return;
+        }
+        if(DataManage.writeData(DataManage.people)){
+            System.out.println("Delete_data_success");
+            DataManage.people.clear();
+            DataManage.readData();
+            return;
+        }
+    }
+
+    void add_contact(){
+        People person = new People();
+        String command = "";
+        while(true){
+            System.out.println("Name:");
             command = Main.keyin.nextLine();
-            if(command.length() != 0 && command.length() <= 12 ){
-                modify_person.setName(command);
-                flag = false;
+            if(DataManage.checkName(command)){
+                person.setName(command);
+                break;
             }
             else{
                 System.out.println("Error_wrong_data");
                 System.out.println("Please_input_again:");
             }
         }
-        flag = true;
-        while(flag){
-            System.out.println("New_phone:");
+        while(true){
+            System.out.println("Phone:");
             command = Main.keyin.nextLine();
-            if(command.matches("[0-9]{4}-[0-9]{6}")){
-                modify_person.setPhone(command);
-                flag = false;
+            if(DataManage.checkPhone(command)){
+                person.setPhone(command);
+                break;
             }
             else{
                 System.out.println("Error_wrong_data");
                 System.out.println("Please_input_again:");
             }
         }
-        flag = true;
-        while(flag){
+        while(true){
             System.out.print("Catalogs:");
-            int i;
-            for(i = 0 ; i < Catalog.catalog.size() ; ++i){
+            for(int i = 0 ; i < Catalog.catalog.size() ; ++i){
                 if(i != 0){System.out.print(" ");}
                 System.out.print("[" + (char)(i+97) + "]." + Catalog.catalog.get(i).getCatalog());
             }
-            System.out.println("New_catalog:");
+            System.out.println("\nCatalog:");
             command = Main.keyin.nextLine();
-            if(command.equalsIgnoreCase(Catalog.catalog.get(command.compareTo("a")).getCatalog())){
-                modify_person.setCatalog(Catalog.catalog.get(command.compareTo("a")).getCatalog());
-                flag = false;
+            if(DataManage.checkCatalog(command)){
+                person.setCatalog(Catalog.catalog.get(command.compareTo("a")).getCatalog());
+                break;
             }
             else{
                 System.out.println("Error_wrong_data");
                 System.out.println("Please_input_again:");
             }
         }
-        flag = true;
-        while(flag){
-            System.out.println("New_email:");
+        while(true){
+            System.out.println("Email:");
             command = Main.keyin.nextLine();
-            if(command.matches("") ){
-                modify_person.setName(command);
-                flag = false;
+            if(DataManage.checkEmail(command)){
+                person.setEmail(command);
+                break;
             }
             else{
                 System.out.println("Error_wrong_data");
+                System.out.println("Please_input_again:");
+            }
+        }
+        while(true){
+            System.out.println("Birthday:");
+            command = Main.keyin.nextLine();
+            if(DataManage.checkBirthday(command)){
+                person.setBirthday(command);
+                break;
+            }
+            else{
+                System.out.println("Error_wrong_data");
+                System.out.println("Please_input_again:");
+            }
+        }
+        person.setID(DataManage.people.size()+1);
+        //ArrayList<People> temp_people = new ArrayList<>();
+        //temp_people.equals(DataManage.people);
+        //DataManage.people.add(person);
+        //DataManage.people.clear();
+        DataManage.appendData(person);
+        DataManage.people.clear();
+        DataManage.readData();
+        System.out.println("Add_contact_success");
+    }
+
+    void add_catalog(){
+        System.out.println("Please_input_new_catalog:");
+        String command = "";
+        while(true){
+            command = Main.keyin.nextLine();
+            if(command.length() <= 12){
+                Catalog cat = new Catalog(command);
+                Catalog.catalog.add(cat);
+                if(Catalog.writeCatalog(cat)){
+                    System.out.println("Add_catalog_Gamer_success");
+                }
+                return;
+            }
+            else{
+                System.out.println("Error_wrong_data");
+                System.out.println("Please_input_again:");
+            }
+        }
+    }
+
+    void show_catalog(){
+        System.out.println("[Catalog]");
+        for(Catalog c : Catalog.catalog){
+            System.out.println(c.getCatalog());
+        }
+    }
+
+    void set_display_field(){
+        System.out.print("[1].Show_name:");
+        if(Config.config.get("show_name").equalsIgnoreCase("true")){
+            System.out.print(1);
+        }
+        else{
+            System.out.print(0);
+        }
+        System.out.print(" [2].Show_phone:");
+        if(Config.config.get("show_phone").equalsIgnoreCase("true")){
+            System.out.print(1);
+        }
+        else{
+            System.out.print(0);
+        }
+        System.out.print(" [3].Show_cat:");
+        if(Config.config.get("show_catalog").equalsIgnoreCase("true")){
+            System.out.print(1);
+        }
+        else{
+            System.out.print(0);
+        }
+        System.out.print(" [4].Show_email:");
+        if(Config.config.get("show_email").equalsIgnoreCase("true")){
+            System.out.print(1);
+        }
+        else{
+            System.out.print(0);
+        }
+        System.out.print(" [5].Show_bd:");
+        if(Config.config.get("show_birthday").equalsIgnoreCase("true")){
+            System.out.println(1);
+        }
+        else{
+            System.out.println(0);
+        }
+        System.out.println();
+
+        String command = "";
+        System.out.println("New_show_name(0/1):");
+        while(true){
+            command = Main.keyin.nextLine();
+            if(command.equals("1")){
+                Config.config.put("show_name", "true");break;
+            }
+            else if(command.equals("0")){
+                Config.config.put("show_name", "false");break;
+            }
+            else{
+                System.out.println("Error_wrong_data");
+                System.out.println("Please_input_again:");
+            }
+        }
+        System.out.println("New_show_phone(0/1):");
+        while(true){
+            command = Main.keyin.nextLine();
+            if(command.equals("1")){
+                Config.config.put("show_phone", "true");break;
+            }
+            else if(command.equals("0")){
+                Config.config.put("show_phone", "false");break;
+            }
+            else{
+                System.out.println("Error_wrong_data");
+                System.out.println("Please_input_again:");
+            }
+        }
+        System.out.println("New_show_catalog(0/1):");
+        while(true){
+            command = Main.keyin.nextLine();
+            if(command.equals("1")){
+                Config.config.put("show_catalog", "true");break;
+            }
+            else if(command.equals("0")){
+                Config.config.put("show_catalog", "false");break;
+            }
+            else{
+                System.out.println("Error_wrong_data");
+                System.out.println("Please_input_again:");
+            }
+        }
+        System.out.println("New_show_email(0/1):");
+        while(true){
+            command = Main.keyin.nextLine();
+            if(command.equals("1")){
+                Config.config.put("show_email", "true");break;
+            }
+            else if(command.equals("0")){
+                Config.config.put("show_email", "false");break;
+            }
+            else{
+                System.out.println("Error_wrong_data");
+                System.out.println("Please_input_again:");
+            }
+        }
+        System.out.println("New_show_birthday(0/1):");
+        while(true){
+            command = Main.keyin.nextLine();
+            if(command.equals("1")){
+                Config.config.put("show_birthday", "true");break;
+            }
+            else if(command.equals("0")){
+                Config.config.put("show_birthday", "false");break;
+            }
+            else{
+                System.out.println("Error_wrong_data");
+                System.out.println("Please_input_again:");
+            }
+        }
+
+        System.out.print("[1].Show_name:");
+        if(Config.config.get("show_name").equalsIgnoreCase("true")){
+            System.out.print(1);
+        }
+        else{
+            System.out.print(0);
+        }
+        System.out.print(" [2].Show_phone:");
+        if(Config.config.get("show_phone").equalsIgnoreCase("true")){
+            System.out.print(1);
+        }
+        else{
+            System.out.print(0);
+        }
+        System.out.print(" [3].Show_cat:");
+        if(Config.config.get("show_catalog").equalsIgnoreCase("true")){
+            System.out.print(1);
+        }
+        else{
+            System.out.print(0);
+        }
+        System.out.print(" [4].Show_email:");
+        if(Config.config.get("show_email").equalsIgnoreCase("true")){
+            System.out.print(1);
+        }
+        else{
+            System.out.print(0);
+        }
+        System.out.print(" [5].Show_bd:");
+        if(Config.config.get("show_birthday").equalsIgnoreCase("true")){
+            System.out.println(1);
+        }
+        else{
+            System.out.println(0);
+        }
+
+        Config.writeConfig(Config.config);
+    }
+
+    void set_show_perpage(){
+        System.out.println("show_defalt_perpage:" + Config.config.get("show_defalt_perpage"));
+        System.out.println("new_show_defalt_perpage:");
+        String command = "";
+        while(true){
+            command = Main.keyin.nextLine();
+            if(Integer.parseInt(command) > 0 && Integer.parseInt(command) <= DataManage.people.size()){
+                Config.config.put("show_defalt_perpage", command);
+                Config.writeConfig(Config.config);
+                Config.config.clear();
+                Config.readConfig();
+                System.out.println("show_defalt_perpage:" + Config.config.get("show_defalt_perpage"));
+                return;
+            }
+            else{
+                System.out.println("Error_wrong_data");
+                System.out.println("Please_input_again:");
+            }
+        }
+    }
+
+    void set_order(){
+        System.out.println("show_sort_order:" + Config.config.get("show_sort_order"));
+        System.out.println("Please_input_new_sort_order:");
+        String command = "";
+        while(true){
+            command = Main.keyin.nextLine();
+            if(command.equalsIgnoreCase("asc")){
+                Config.config.put("show_sort_order", command);
+                Config.writeConfig(Config.config);
+                Config.config.clear();
+                Config.readConfig();
+                System.out.println("show_sort_order:" + Config.config.get("show_sort_order"));
+                return;
+            }
+            else if(command.equalsIgnoreCase("des")){
+                Config.config.put("show_sort_order", command);
+                Config.writeConfig(Config.config);
+                Config.config.clear();
+                Config.readConfig();
+                System.out.println("show_sort_order:" + Config.config.get("show_sort_order"));
+                return;
+            }
+            else{
+                System.out.println("Error_wrong_data");
+                System.out.println("Please_input_again:");
+            }
+        }
+    }
+
+    void set_sort_by_field(){
+        String command = "";
+        boolean flag = true;
+        System.out.println("[1].ID [2].Name [3].Phone [4].Cat [5].Email [6].Bd");
+        System.out.println("[0].Go_back_to_main_menu [99].Exit_system");
+        while(flag){
+            command = Main.keyin.nextLine();
+            switch(command){
+                case "1" -> {
+                    Config.config.put("show_sort_property", "id");
+                    System.out.println("Sorted_by:ID");
+                    flag = false;
+                    break;
+                }
+                case "2" -> {
+                    Config.config.put("show_sort_property", "name");
+                    System.out.println("Sorted_by:Name");
+                    flag = false;
+                    break;
+                }
+                case "3" -> {
+                    Config.config.put("show_sort_property", "phone");
+                    System.out.println("Sorted_by:Phone");
+                    flag = false;
+                    break;
+                }
+                case "4" -> {
+                    Config.config.put("show_sort_property", "catalog");
+                    System.out.println("Sorted_by:Catalog");
+                    flag = false;
+                    break;
+                }
+                case "5" -> {
+                    Config.config.put("show_sort_property", "email");
+                    System.out.println("Sorted_by:Email");
+                    flag = false;
+                    break;
+                }
+                case "6" -> {
+                    Config.config.put("show_sort_property", "birthday");
+                    System.out.println("Sorted_by:Birthday");
+                    flag = false;
+                    break;
+                }
+                case "0" -> {
+                    return;
+                }
+                case "99" -> {
+                    System.exit(0);
+                }
+                default -> {
+                    System.out.println("Error_wrong_command");
+                    System.out.println("Please_input_again:");
+                }
+            }
+        }
+        Config.writeConfig(Config.config);
+        Config.config.clear();
+        Config.readConfig();
+    }
+
+    void show_raw_data(){
+        DataManage.printTitle(DataManage.getValue(Config.config.get("show_name")), DataManage.getValue(Config.config.get("show_phone")), 
+                DataManage.getValue(Config.config.get("show_catalog")), DataManage.getValue(Config.config.get("show_email")), DataManage.getValue(Config.config.get("show_birthday")));
+        for(People p : DataManage.people){
+            p.print_data(DataManage.getValue(Config.config.get("show_name")), DataManage.getValue(Config.config.get("show_phone")), 
+                DataManage.getValue(Config.config.get("show_catalog")), DataManage.getValue(Config.config.get("show_email")), DataManage.getValue(Config.config.get("show_birthday")));
+        }
+    }
+
+    void data_optimize(){
+        System.out.println("Please_confirm_data_optimize_y_or_n:");
+        String command = "";
+        while(true){
+            command = Main.keyin.nextLine();
+            if(command.equalsIgnoreCase("y")){
+                DataManage.writeData(DataManage.people);
+                System.out.println("Data_optimize_success");
+                return;
+            }
+            else if(command.equalsIgnoreCase("n")){
+                System.out.println("Data_optimize_denied");
+                return;
+            }
+            else{
+                System.out.println("Error_wrong_command");
                 System.out.println("Please_input_again:");
             }
         }
